@@ -1,8 +1,12 @@
+"""Package settings."""
+
 import os
-from pydantic import BaseSettings, SecretStr, HttpUrl
+
+from pydantic import BaseSettings, HttpUrl, SecretStr
 
 
 class Settings(BaseSettings):
+    """Configurable secrets."""
 
     DATEX_USERNAME: str
     DATEX_PASSWORD: SecretStr

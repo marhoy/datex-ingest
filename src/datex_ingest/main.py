@@ -1,10 +1,11 @@
+"""CLI related stuff."""
 import datetime
 
-from datex_ingest import datex_api
-from datex_ingest import influxdb
+from datex_ingest import datex_api, influxdb
 
 
 def main() -> None:
+    """CLI entrypoint."""
     measurements = datex_api.get_traveltime_data()
     influxdb.write_measurements(measurements)
 

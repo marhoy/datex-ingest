@@ -1,3 +1,5 @@
+"""DATEX-related stuff."""
+
 import datetime
 from typing import List
 from zoneinfo import ZoneInfo
@@ -5,6 +7,7 @@ from zoneinfo import ZoneInfo
 import requests
 from lxml import etree
 from pydantic import BaseModel
+
 from datex_ingest import config
 
 TRAVEL_TIME_URL = "https://www.vegvesen.no/ws/no/vegvesen/veg/trafikkpublikasjon/reisetid/3/GetTravelTimeData"  # noqa: E501
@@ -17,6 +20,8 @@ XML_NS = {
 
 
 class TravelTimeMeasurement(BaseModel):
+    """Data class for measurements from DATEX."""
+
     segment_id: int
     timestamp: datetime.datetime
     travel_time: int
@@ -24,6 +29,7 @@ class TravelTimeMeasurement(BaseModel):
 
 
 def get_traveltime_data() -> List[TravelTimeMeasurement]:
+    """Get measurements from DATEX API."""
     r = requests.get(
         TRAVEL_TIME_URL,
         auth=(config.DATEX_USERNAME, config.DATEX_PASSWORD.get_secret_value()),

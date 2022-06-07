@@ -1,4 +1,7 @@
+"""InfluxDB related stuff."""
+
 from typing import List
+
 from influxdb_client import InfluxDBClient, Point
 from influxdb_client.client.write_api import SYNCHRONOUS
 
@@ -7,6 +10,7 @@ from datex_ingest.datex_api import TravelTimeMeasurement
 
 
 def write_measurements(measurements: List[TravelTimeMeasurement]) -> None:
+    """Write a list of DATEX measurements to InfluxDB."""
     client = InfluxDBClient(
         url=config.INFLUX_URL,
         token=config.INFLUX_TOKEN.get_secret_value(),
@@ -15,13 +19,24 @@ def write_measurements(measurements: List[TravelTimeMeasurement]) -> None:
 
     write_api = client.write_api(write_options=SYNCHRONOUS)
 
+    # List of Points containting the travel_time for each segment.
     points = [
         Point("travel_time")
         .tag("segment", m.segment_id)
-        .field("travel_time", m.travel_time)
-        .field("freeflow_time", m.freeflow_time)
+        .field("value", m.travel_time)
         .time(m.timestamp)
         for m in measurements
     ]
+
+    # List of Points containting the freeflow_time for each segment.
+    points.extend(
+        [
+            Point("freeflow_time")
+            .tag("segment", m.segment_id)
+            .field("value", m.freeflow_time)
+            .time(m.timestamp)
+            for m in measurements
+        ]
+    )
 
     write_api.write(bucket=config.INFLUX_BUCKET, record=points)
