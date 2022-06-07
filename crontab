@@ -1,0 +1,4 @@
+SHELL=/bin/bash
+BASH_ENV=$HOME/environment
+
+2-59/5 * * * *  datex_ingest >> $HOME/cron.log 2>&1
