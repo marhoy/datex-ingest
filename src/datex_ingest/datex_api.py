@@ -15,8 +15,16 @@ LOCATION_URL = "https://www.vegvesen.no/ws/no/vegvesen/veg/trafikkpublikasjon/re
 
 XML_NS = {
     "rtd": "http://datex2.eu/schema/3/roadTrafficData",
+    "lref": "http://datex2.eu/schema/3/locationReferencing",
     "cmn": "http://datex2.eu/schema/3/common",
 }
+
+
+class Segment(BaseModel):
+    """Data class for road segment from DATEX."""
+
+    id: int
+    name: str
 
 
 class TravelTimeMeasurement(BaseModel):
@@ -69,3 +77,20 @@ def get_traveltime_data() -> List[TravelTimeMeasurement]:
         )
 
     return measurements
+
+
+def get_segments():
+    """Get road segments from DATEX API."""
+    r = requests.get(
+        LOCATION_URL,
+        auth=(config.DATEX_USERNAME, config.DATEX_PASSWORD.get_secret_value()),
+    )
+    tree = etree.fromstring(r.text)
+    segments = []
+    for segment in tree.xpath("//lref:predefinedLocationReference", namespaces=XML_NS):
+        name = segment.xpath(
+            "lref:predefinedLocationName/cmn:values/cmn:value/text()", namespaces=XML_NS
+        )[0]
+        segments.append(Segment(id=segment.get("id"), name=name))
+
+    return segments
