@@ -1,0 +1,44 @@
+#admin
+# @token = 5LabZqIrFRvuJpfc2FVkpUbFiHr1-CfDart_Hg15JNX0gPEPntk_C7Gmm1GbFmbvOfts5UcSSwFv3mZn1qcbBg==
+
+# Grafana
+@token = SCTXmS8sS3sPfeRGUU5ld4z305topCxReKACo8rg_tnmgW3dBKRYQfo58QAw64vVsrPkBtC2tigloF2NTyIpWA==
+
+### List retention policies
+GET http://influxdb.hjemme.nett:8086/api/v2/dbrps
+    ?orgID=21cb1bcd17490c03
+Authorization: Token {{token}}
+
+
+### Remove retention policy
+DELETE http://influxdb.hjemme.nett:8086/api/v2/dbrps/0996ef9b09922000
+    ?orgID=21cb1bcd17490c03
+Authorization: Token {{token}}
+
+
+### Add retention policy
+POST http://influxdb.hjemme.nett:8086/api/v2/dbrps
+Authorization: Token {{token}}
+content-type: application/json
+
+{
+    "bucketID": "c089fd38994717fb",
+    "database": "reisetider_composite",
+    "default": true,
+    "retention_policy": "autogen",
+    "orgID": "21cb1bcd17490c03"
+}
+
+
+### Add retention policy
+POST http://influxdb.hjemme.nett:8086/api/v2/dbrps
+Authorization: Token {{token}}
+content-type: application/json
+
+{
+    "bucketID": "adc56f9dd7ba7ecc",
+    "database": "reisetider",
+    "default": true,
+    "retention_policy": "autogen",
+    "orgID": "21cb1bcd17490c03"
+}
