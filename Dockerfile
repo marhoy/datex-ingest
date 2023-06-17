@@ -1,4 +1,4 @@
-FROM python:3.10-slim-bullseye
+FROM python:3.11-slim-bullseye
 
 # Define some environment variables
 ENV PIP_NO_CACHE_DIR=true \
@@ -27,18 +27,18 @@ RUN chmod u+s /usr/sbin/cron
 USER $USERNAME
 
 # Install poetry
-RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/install-poetry.py | python - --version 1.1.13
-RUN poetry config virtualenvs.create false
+RUN curl -sSL https://install.python-poetry.org | python - --version 1.5.1
+# RUN poetry config virtualenvs.create false
 
 # Install runtime dependencies (will be cached)
 COPY --chown=$USERNAME:$USERNAME pyproject.toml poetry.lock ./
-RUN poetry install --no-dev --no-root
+RUN poetry install --only main --no-root
 
 # Copy project files to container
 COPY --chown=$USERNAME:$USERNAME src ./src
 
 # Install our own package
-RUN poetry install --no-dev
+RUN poetry install --only main
 
 # Install crontab for $USERNAME
 COPY --chown=$USERNAME:$USERNAME crontab ./
