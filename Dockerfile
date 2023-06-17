@@ -28,7 +28,7 @@ USER $USERNAME
 
 # Install poetry
 RUN curl -sSL https://install.python-poetry.org | python - --version 1.5.1
-# RUN poetry config virtualenvs.create false
+RUN poetry config virtualenvs.in-project true
 
 # Install runtime dependencies (will be cached)
 COPY --chown=$USERNAME:$USERNAME pyproject.toml poetry.lock ./
