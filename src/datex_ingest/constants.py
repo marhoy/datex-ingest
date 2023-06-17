@@ -22,4 +22,4 @@ class Settings(BaseSettings):
         env_file = os.getenv("DATEX_CONFIG_ENV", "config.env")
 
 
-settings = Settings()
+settings = Settings()  # type: ignore
